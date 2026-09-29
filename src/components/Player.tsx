@@ -1,37 +1,51 @@
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 
 interface IProps {
-    initialName: string;
-    symbol: string;
-    isActive: boolean;
+  initialName: string;
+  symbol: "X" | "O";
+  isActive: boolean;
+  onChangeName: (symbol: "X" | "O", newName: string) => void;
 }
 
-function Player({initialName, symbol, isActive} : IProps) {
+function Player({ initialName, symbol, isActive, onChangeName }: IProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [playerName, setPlayerName] = useState(initialName);
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [playerName, setPlayerName] = useState(initialName);
+  function handleEditClick() {
+    setIsEditing((editing) => {
+      // Якщо стан змінюється з Editing (true) на Save (false) — повідомляємо App
+      if (editing) {
+        onChangeName(symbol, playerName);
+      }
+      return !editing;
+    });
+  }
 
-
-    function handleEditClick () {
-        setIsEditing((prev) => !prev);
-    }
-
-    let editTablePlayerName = <span className="player-name">{playerName}</span>
-
-    if(isEditing) {
-        editTablePlayerName = <input type="text" required value={playerName} onChange={(e) => setPlayerName(e.target.value)}/>
-    }
+  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+    setPlayerName(event.target.value);
+  }
 
   return (
     <li className={isActive ? 'active' : undefined}>
-        <span className="player">
-            {editTablePlayerName}
-            <span className="player-symbol">{symbol}</span>
-        </span>
+      <span className="player">
+        {isEditing ? (
+          <input
+            type="text"
+            required
+            value={playerName}
+            onChange={handleChange}
+          />
+        ) : (
+          <span className="player-name">{playerName}</span>
+        )}
+        <span className="player-symbol">{symbol}</span>
+      </span>
 
-        <button onClick={handleEditClick}>{isEditing ? "Save" : "Edit"}</button>
+      <button onClick={handleEditClick}>
+        {isEditing ? "Save" : "Edit"}
+      </button>
     </li>
-  )
+  );
 }
 
-export default Player
+export default Player;

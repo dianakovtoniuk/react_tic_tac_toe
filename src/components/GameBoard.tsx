@@ -1,38 +1,18 @@
-import { useState } from 'react';
-
-interface IProps {
-  onSelectSquare: () => void;
-  activePlayerSymbol: string;
+interface GameBoardProps {
+  onSelectSquare: (rowIndex: number, colIndex: number) => void;
+  board: (string | null)[][];
 }
 
-const initialGameBoard: (string | null)[][] = [
-  [null, null, null],
-  [null, null, null],
-  [null, null, null],
-];
-
-export default function GameBoard({ onSelectSquare, activePlayerSymbol }: IProps) {
-  const [gameBoard, setGameBoard] = useState<(string | null)[][]>(initialGameBoard);
-
-  function handleSelectSquare(rowIndex: number, colIndex: number) {
-    setGameBoard((prevGameBoard) => {
-      const updatedBoard = [...prevGameBoard.map((innerArray) => [...innerArray])];
-      updatedBoard[rowIndex][colIndex] = activePlayerSymbol;
-      return updatedBoard;
-    });
-
-    onSelectSquare();
-  }
-
+export default function GameBoard({ onSelectSquare, board }: GameBoardProps) {
   return (
     <ol id="game-board">
-      {gameBoard.map((row, rowIndex) => (
+      {board.map((row, rowIndex) => (
         <li key={rowIndex}>
           <ol>
             {row.map((playerSymbol, colIndex) => (
               <li key={colIndex}>
                 <button
-                  onClick={() => handleSelectSquare(rowIndex, colIndex)}
+                  onClick={() => onSelectSquare(rowIndex, colIndex)}
                   disabled={playerSymbol !== null}
                 >
                   {playerSymbol}
