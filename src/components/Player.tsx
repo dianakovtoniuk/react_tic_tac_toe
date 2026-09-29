@@ -3,9 +3,10 @@ import { useState } from "react";
 interface IProps {
     initialName: string;
     symbol: string;
+    isActive: boolean;
 }
 
-function Player({initialName, symbol} : IProps) {
+function Player({initialName, symbol, isActive} : IProps) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [playerName, setPlayerName] = useState(initialName);
@@ -22,7 +23,7 @@ function Player({initialName, symbol} : IProps) {
     }
 
   return (
-    <li>
+    <li className={isActive ? 'active' : undefined}>
         <span className="player">
             {editTablePlayerName}
             <span className="player-symbol">{symbol}</span>
